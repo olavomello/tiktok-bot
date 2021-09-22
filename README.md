@@ -10,3 +10,6 @@ You must download selenium(You can use pip) and https://chromedriver.chromium.or
 
 # Start
 Start the bot with `python Bot.py` and insert the Captcha.
+
+# Inspired on
+https://github.com/NoNameoN-A/TikTok-Follow-Heart-Views-Bot
