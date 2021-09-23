@@ -46,7 +46,7 @@ def loop1():
         sleep(10)
         driver.refresh()
         i += 1
-        total = i * totalViews
+        total = i * 500
         print("Views successfull delivered! Total", total,"views. Send again soon...")
         if not boost : sleep(320)
         loop1()
@@ -175,7 +175,6 @@ def loop6():
 # print("Author: https://github.com/NoNameoN-A")
 
 chromiumDriver = 'chromedriver'
-totalViews = 500
 #vidUrl = "https://www.tiktok.com/@isacaram/video/6910652595497340166" #Change it
 
 vidUrl = str(input("Link do vídeo no Tiktok : "))
