@@ -181,7 +181,7 @@ vidUrl = str(input("Link do vídeo no Tiktok : "))
 if vidUrl == "" : vidUrl = "https://www.tiktok.com/@isacaram/video/6827907779047492869"
 print("Boosting vídeo : " + vidUrl)
 
-bot = int(input("What do you want to do?\n1 - Auto views("+str(totalViews)+")\n2 - Auto hearts\n3 - Auto (FIRST) comments heart\n4 - Auto followers\n5 - Auto Share\n6 - Simple reload\n"))
+bot = int(input("What do you want to do?\n1 - Auto views(500)\n2 - Auto hearts\n3 - Auto (FIRST) comments heart\n4 - Auto followers\n5 - Auto Share\n6 - Simple reload\n"))
 i = 0
 
 
