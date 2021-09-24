@@ -8,6 +8,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 import math
 import pyfiglet
 from time import sleep
+import datetime
 import random, socket, struct , json, urllib.request
 import undetected_chromedriver.v2 as uc
 from io import BytesIO
@@ -37,12 +38,12 @@ tabs = 1
 
 def loop1():
     global i
-    exec()
+    if not driver : exec()
     sleep(10)
     try:
         driver.find_element_by_xpath("//*[@id=\"main\"]/div/div[4]/div/button").click()
     except:
-        print("You didn't solve the captcha yet. Need to refresh to avoid endless loop.")
+        print(pDte(),"You didn't solve the captcha yet. Need to refresh to avoid endless loop.")
         loop1()
     try:
         sleep(2)
@@ -55,22 +56,22 @@ def loop1():
         driver.refresh()
         i += 1
         total = i * 500
-        print("Views successfull delivered! Total", total,"views. Send again soon...")
+        print(pDte(),"Views successfull delivered! Total", total,"views. Send again soon...")
         if not boost : sleep(320)
         loop1()
     except:
-        print("A generic error occurred. Now will retry again")
+        print(pDte(),"A generic error occurred. Now will retry again")
         if not boost : driver.refresh()
         if not boost : sleep(10)
         loop1()
 
 def loop2():
-    exec()
+    if not driver : exec()
     sleep(10)
     try:
         driver.find_element_by_xpath("/html/body/div[4]/div[1]/div[3]/div/div[2]/div/button").click()
     except:
-        print("You didn't solve the captcha yet. Need to refresh to avoid endless loop.")
+        print(pDte(),"You didn't solve the captcha yet. Need to refresh to avoid endless loop.")
         driver.refresh()
         loop2()
     try:
@@ -83,24 +84,24 @@ def loop2():
         sleep(10)
         hearts = driver.find_element_by_xpath('//*[@id="c2VuZE9nb2xsb3dlcnNfdGlrdG9r"]/span').text
         sleep(55)
-        print(hearts," Success delivered!")
+        print(pDte(),hearts," Success delivered!")
         sleep(100)
         driver.refresh()
         sleep(200)
         loop2()
     except:
-        print("A generic error occurred. Now will retry again")
+        print(pDte(),"A generic error occurred. Now will retry again")
         driver.refresh()
         sleep(355)
         loop2()
 
 def loop3():
-    exec()
+    if not driver : exec()
     sleep(10)
     try:
         driver.find_element_by_xpath("/html/body/div[4]/div[1]/div[3]/div/div[3]/div/button").click()
     except:
-        print("You didn't solve the captcha yet. Need to refresh to avoid endless loop.")
+        print(pDte(),"You didn't solve the captcha yet. Need to refresh to avoid endless loop.")
         driver.refresh()
         loop2()
     try:
@@ -114,22 +115,23 @@ def loop3():
         driver.find_element_by_xpath("/html/body/div[4]/div[4]/div/div/div/div/form/ul/li/div/button").click()
         sleep(47)
         driver.refresh()
-        print("Success delivered!")
+        print(pDte(),"Success delivered!")
         loop3()
     except:
-        print("A generic error occurred. Now will retry again")
+        print(pDte(),"A generic error occurred. Now will retry again")
         driver.refresh()
         sleep(50)
         loop3()
 
 def loop4():
-    exec()
+    if not driver : exec()
     sleep(10)
-    wait_time = 660 #11 minutes
+    wait_time = 390 # 600 - 11 minutes
+    total = 25
     try:
         driver.find_element_by_xpath("/html/body/div[4]/div[1]/div[3]/div/div[1]/div/button").click() #Followers
     except:
-        print("You didn't solve the captcha yet. Need to refresh to avoid endless loop.")
+        print(pDte(),"You didn't solve the captcha yet. Need to refresh to avoid endless loop.")
         driver.refresh()
         loop4()
     try:
@@ -141,23 +143,24 @@ def loop4():
         driver.find_element_by_xpath("/html/body/div[4]/div[2]/div/div/div/div/form/button").click() #AddFollowers
         # driver.execute_script("comfollowers();")
         sleep(20)
-        print("Success delivered!")
+        print(pDte(),"Success delivered ", total, " followers. Send again soon...")
+        total += 25
         driver.refresh()
         sleep(wait_time)
         loop4()
     except:
-        print("A generic error occurred. Now will retry again")
+        print(pDte(),"A generic error occurred. Now will retry again")
         if not boost : driver.refresh()
         if not boost : sleep(10)
         loop4()
 
 def loop5():
-    exec()
+    if not driver : exec()
     sleep(20)
     try:
         driver.find_element_by_xpath("/html/body/div[4]/div[1]/div[3]/div/div[5]/div/button").click()
     except:
-        print("You didn't solve the captcha yet. Need to refresh to avoid endless loop.")
+        print(pDte(),"You didn't solve the captcha yet. Need to refresh to avoid endless loop.")
         driver.refresh()
         loop5()
     try:
@@ -169,28 +172,26 @@ def loop5():
         # driver.find_element_by_xpath("/html/body/div[4]/div[6]/div/div/div/div/div[1]/div/form/button").click() # AddShares
         driver.find_element_by_xpath("//*[@id=\"c2VuZC9mb2xsb3dlcnNfdGlrdG9s\"]/div[1]/div/form/button").click() #AddFollowers
         sleep(5)
-        print("Shares sent! Sending more in 3 minutes ...")
+        print(pDte(),"Shares sent! Sending more in 3 minutes ...")
         sleep(180)
         loop5()
     except Exception as e:
-        print("A generic error occurred. Now will retry again. Error : " + str(e))
+        print(pDte(),"A generic error occurred. Now will retry again. Error : " + str(e))
         driver.refresh()
         sleep(5)
         loop5()
 
 def loop6():
-    exec()
+    if not driver : exec()
     sleep(1000)
     driver.refresh()
-    print("Reload")
+    print(pDte(),"Reload")
     loop5()
     
 def loop7():
     # Captcha Broker
-    clear()
-    print(">>>>> Captcha Broker") 
-    
-    exec()
+    if not driver : exec()
+    print(pDte(),">>>>> Captcha Broker") 
     sleep(10)
 
     ## Step 1
@@ -223,6 +224,10 @@ def loop7():
 # --------------------------------------------------------------------------------------------
 
 ## UTILS
+
+# DateTime 
+def pDte():
+    return "["+datetime.datetime.now().strftime("%Y-%m-%d %H:%M")+"]:"
 
 # define our clear function
 def clear():
