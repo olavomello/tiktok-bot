@@ -16,9 +16,7 @@ from io import StringIO
 from PIL import Image
 import pytesseract
 import base64
-
-
-# from pyvirtualdisplay import Display
+from pyvirtualdisplay import Display
 
 # Boost
 boost = False
@@ -312,8 +310,8 @@ def exec():
     try:
 
         # Open virtual display
-        # display = Display(visible=0, size=(800, 800))
-        # display.start()
+        display = Display(visible=0, size=(800, 800))
+        display.start()
 
         # Main base tool site
         urlMain =   "https://vipto.de/" #"https://agenciadix.com.br/"
