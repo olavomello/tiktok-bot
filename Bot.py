@@ -124,10 +124,10 @@ def loop3():
         loop3()
 
 def loop4():
+    global i
     if not driver : exec()
     sleep(10)
-    wait_time = 390 # 600 - 11 minutes
-    total = 25
+    wait_time = 420 # 420 7 minutos # 600 - 11 minutes
     try:
         driver.find_element_by_xpath("/html/body/div[4]/div[1]/div[3]/div/div[1]/div/button").click() #Followers
     except:
@@ -142,9 +142,10 @@ def loop4():
         sleep(5)
         driver.find_element_by_xpath("/html/body/div[4]/div[2]/div/div/div/div/form/button").click() #AddFollowers
         # driver.execute_script("comfollowers();")
-        sleep(20)
-        print(pDte(),"Success delivered ", total, " followers. Send again soon...")
-        total += 25
+        sleep(10)
+        i += 1
+        total = i * 25
+        print(pDte(),"Success delivered", total, "followers. Send again soon...")
         driver.refresh()
         sleep(wait_time)
         loop4()
@@ -286,24 +287,28 @@ def getImageScreenshot(element: WebElement) -> bytes:
     
     strCaptcha      =   "img/captcha.png" 
     # driver          =   element._parent
-    ActionChains(driver).move_to_element(element).perform()  # focus
+    if element :
+        ActionChains(driver).move_to_element(element).perform()  # focus
     driver.save_screenshot(strCaptcha)
 
     # Base64 to Image
     scr_img     =   Image.open(strCaptcha)
     
     # Element position
-    x           =   math.floor(element.location["x"])
-    y           =   math.floor(element.location["y"])
-    w           =   math.ceil(element.size["width"])
-    h           =   math.ceil(element.size["height"])
+    if element :
+        x           =   math.floor(element.location["x"])
+        y           =   math.floor(element.location["y"])
+        w           =   math.ceil(element.size["width"])
+        h           =   math.ceil(element.size["height"])
 
-    # Crop
-    scr_img.crop(( x, y, w, h ))
+        # Crop
+        scr_img.crop(( x, y, w, h ))
+
     return scr_img.save(strCaptcha)
 
 # Main function 
 def exec():
+    print(pDte(), "Engine started !")
     try:
 
         # Open virtual display
@@ -315,8 +320,8 @@ def exec():
 
         # Start Chromium Options
         if chromeAnonymous == False :
-            # chrome_options = webdriver.ChromeOptions()
-            chrome_options = Options()
+            chrome_options = webdriver.ChromeOptions()
+            # chrome_options = Options()
         else :
             chrome_options = uc.ChromeOptions()
             
@@ -326,15 +331,17 @@ def exec():
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
         chrome_options.add_argument('--disable-extensions')
+        chrome_options.add_argument('--disable-notifications')
         chrome_options.add_argument('--ignore-certificate-errors')
         chrome_options.add_argument('--ignore-ssl-errors')  
         chrome_options.add_argument('--hide-scrollbars')    
-        chrome_options.add_argument("--log-level=3")  # fatal 
-        chrome_options.add_argument("--disable-blink-features=AutomationControlled")  
-        if chromeAnonymous == False :    
-            chrome_options.add_experimental_option('useAutomationExtension', False)
+        chrome_options.add_argument('--log-level=3')
+        chrome_options.add_argument('--disable-blink-features=AutomationControlled')  
+        if chromeAnonymous == False : 
             chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
-            chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+            chrome_options.add_experimental_option('excludeSwitches', ['enable-automation'])
+            chrome_options.add_experimental_option('useAutomationExtension', False)
+          
         # chrome_options.add_argument("--app=="+urlMain)
         # User agent
         user_agent = 'Mozilla/5.0 CK={} (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'
@@ -394,14 +401,23 @@ def exec():
 
         # Exec
         driver.get(urlMain)
-
+        sleep(5)
+        # Print captcha
+        img_data          =     driver.find_element_by_xpath('/html/body/div[4]/div[2]/form/div/div/img')
+        # Save file
+        getImageScreenshot(img_data)
+        print("<a href='img/captcha.png'>img/captcha.png</a>")
+        captcha = input(">> Open captcha image bellow and insert text :")
+        print("Captcha : ", captcha)
+        driver.find_element_by_xpath('/html/body/div[4]/div[2]/form/div/div/div/input').send_keys(captcha) # Add Captcha
+        sleep(1)
+        driver.find_element_by_xpath('/html/body/div[4]/div[2]/form/div/div/div/div/button').click() # Execute Captcha
     except Exception as e:
         print("Engine error. Trying another...")
         if chromeAnonymous == False : 
             driver.close()
         sleep(1)
         exec()
-
 
 # -------------------------------------------------------------------------------------------
 
