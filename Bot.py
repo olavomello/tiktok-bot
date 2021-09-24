@@ -1,12 +1,21 @@
-
+from os import system, name
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.common.action_chains import ActionChains
+import math
 import pyfiglet
 from time import sleep
 import random, socket, struct , json, urllib.request
 import undetected_chromedriver.v2 as uc
+from io import BytesIO
+from io import StringIO
+from PIL import Image
+import pytesseract
+import base64
+
 
 # from pyvirtualdisplay import Display
 
@@ -34,7 +43,6 @@ def loop1():
         driver.find_element_by_xpath("//*[@id=\"main\"]/div/div[4]/div/button").click()
     except:
         print("You didn't solve the captcha yet. Need to refresh to avoid endless loop.")
-        driver.close()
         loop1()
     try:
         sleep(2)
@@ -57,6 +65,7 @@ def loop1():
         loop1()
 
 def loop2():
+    exec()
     sleep(10)
     try:
         driver.find_element_by_xpath("/html/body/div[4]/div[1]/div[3]/div/div[2]/div/button").click()
@@ -86,6 +95,7 @@ def loop2():
         loop2()
 
 def loop3():
+    exec()
     sleep(10)
     try:
         driver.find_element_by_xpath("/html/body/div[4]/div[1]/div[3]/div/div[3]/div/button").click()
@@ -113,7 +123,8 @@ def loop3():
         loop3()
 
 def loop4():
-    sleep(20)
+    exec()
+    sleep(10)
     wait_time = 660 #11 minutes
     try:
         driver.find_element_by_xpath("/html/body/div[4]/div[1]/div[3]/div/div[1]/div/button").click() #Followers
@@ -122,25 +133,26 @@ def loop4():
         driver.refresh()
         loop4()
     try:
-        sleep(20)
-        driver.find_element_by_xpath("/html/body/div[4]/div[2]/div/div/div/form/div/input").send_keys(vidUrl) #Write
+        sleep(1)
+        driver.find_element_by_xpath("/html/body/div[4]/div[2]/div/form/div/input").send_keys(vidUrl) #Write
         sleep(2)
-        driver.find_element_by_xpath("//*[@id=\"sid\"]/div/div/div/form/div/div/button").click() #Search
+        driver.find_element_by_xpath("/html/body/div[4]/div[2]/div/form/div/div/button").click() #Search
+        sleep(5)
+        driver.find_element_by_xpath("/html/body/div[4]/div[2]/div/div/div/div/form/button").click() #AddFollowers
+        # driver.execute_script("comfollowers();")
         sleep(20)
-        driver.find_element_by_xpath("//*[@id=\"c2VuZF9mb2xsb3dlcnNfdGlrdG9r\"]/div[1]/div/form/button").click() #AddFollowers
-        sleep(wait_time/3)
         print("Success delivered!")
-        sleep(wait_time/3)
-        driver.refresh()
-        sleep(wait_time/3)
-        loop4()
-    except:
-        print("A generic error occurred. Now will retry again")
         driver.refresh()
         sleep(wait_time)
         loop4()
+    except:
+        print("A generic error occurred. Now will retry again")
+        if not boost : driver.refresh()
+        if not boost : sleep(10)
+        loop4()
 
 def loop5():
+    exec()
     sleep(20)
     try:
         driver.find_element_by_xpath("/html/body/div[4]/div[1]/div[3]/div/div[5]/div/button").click()
@@ -167,23 +179,60 @@ def loop5():
         loop5()
 
 def loop6():
+    exec()
     sleep(1000)
     driver.refresh()
     print("Reload")
     loop5()
+    
+def loop7():
+    # Captcha Broker
+    clear()
+    print(">>>>> Captcha Broker") 
+    
+    exec()
+    sleep(10)
 
-# print("Author: https://github.com/NoNameoN-A")
+    ## Step 1
+    # Get SRC from Captcha IMG
+    img_data          =     driver.find_element_by_xpath('/html/body/div[4]/div[2]/form/div/div/img')
+    print("Captcha Image : ", img_data)
 
-chromiumDriver = 'chromedriver'
-#vidUrl = "https://www.tiktok.com/@isacaram/video/6910652595497340166" #Change it
+    # Save file
+    imgBlob           =     getImageScreenshot(img_data)
+    # Open local file
+    img               =   Image.open(imgBlob)  
 
-vidUrl = str(input("Link do vídeo no Tiktok : "))
-if vidUrl == "" : vidUrl = "https://www.tiktok.com/@isacaram/video/6827907779047492869"
-print("Boosting vídeo : " + vidUrl)
+    ## Step 2
+    gray              =   img.convert('L')
+    gray.save('img/captcha_gray.png')
+    bw                =   gray.point(lambda x: 0 if x < 1 else 255, '1')
+    bw.save('img/captcha_thresholded.png')
+    
+    # Step 3
+    strCaptcha        =   pytesseract.image_to_string(bw)
+    print("Captcha solved : ", strCaptcha);
 
-bot = int(input("What do you want to do?\n1 - Auto views(500)\n2 - Auto hearts\n3 - Auto (FIRST) comments heart\n4 - Auto followers\n5 - Auto Share\n6 - Simple reload\n"))
-i = 0
+    # try:
+    #     driver.find_element_by_xpath("/html/body/div[4]/div[1]/div[3]/div/div[5]/div/button").click()
+    # except:
+    #     print("Captcha not found. Need to refresh to avoid endless loop.")
+    #     driver.refresh()
+    #     loop7()    
 
+# --------------------------------------------------------------------------------------------
+
+## UTILS
+
+# define our clear function
+def clear():
+    # for windows
+    if name == 'nt':
+        _ = system('cls')
+  
+    # for mac and linux(here, os.name is 'posix')
+    else:
+        _ = system('clear')
 
 # Random IP
 def setProxy():
@@ -226,6 +275,28 @@ def setProxy():
 
     return [PROXY, ip]
 
+# Element Screenshoot
+def getImageScreenshot(element: WebElement) -> bytes:
+    global driver
+    
+    strCaptcha      =   "img/captcha.png" 
+    # driver          =   element._parent
+    ActionChains(driver).move_to_element(element).perform()  # focus
+    driver.save_screenshot(strCaptcha)
+
+    # Base64 to Image
+    scr_img     =   Image.open(strCaptcha)
+    
+    # Element position
+    x           =   math.floor(element.location["x"])
+    y           =   math.floor(element.location["y"])
+    w           =   math.ceil(element.size["width"])
+    h           =   math.ceil(element.size["height"])
+
+    # Crop
+    scr_img.crop(( x, y, w, h ))
+    return scr_img.save(strCaptcha)
+
 # Main function 
 def exec():
     try:
@@ -233,7 +304,7 @@ def exec():
         # Open virtual display
         # display = Display(visible=0, size=(800, 800))
         # display.start()
-        
+
         # Main base tool site
         urlMain =   "https://vipto.de/" #"https://agenciadix.com.br/"
 
@@ -326,6 +397,21 @@ def exec():
         sleep(1)
         exec()
 
+
+# -------------------------------------------------------------------------------------------
+
+print("############################################################")
+print("######################## TIKTOK BOT ########################")
+print("############################################################")
+
+# 
+vidUrl = str(input("Link do vídeo no Tiktok : "))
+if vidUrl == "" : vidUrl = "https://www.tiktok.com/@isacaram/video/6827907779047492869"
+print("Boosting vídeo : " + vidUrl)
+
+bot = int(input("\n\n########## What do you want to do ? ##########\n\n1 - Auto views(500)\n2 - Auto hearts\n3 - Auto (FIRST) comments heart\n4 - Auto followers\n5 - Auto Share\n6 - Simple reload\n7 - Captcha Broker\n\n##############################################\n\n"))
+i = 0
+
 if bot == 1:
     loop1()
 elif bot == 2:
@@ -338,5 +424,7 @@ elif bot == 5:
     loop5()
 elif bot == 6:
     loop5()
+elif bot == 7:
+    loop7()    
 else:
-    print("You can insert just 1, 2, 3, 4, 5 or 6")
+    print("You can insert just 1, 2, 3, 4, 5, 6 or 7")
