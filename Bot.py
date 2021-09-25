@@ -1,4 +1,4 @@
-from os import system, name
+from os import mkdir, system, name, path
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.options import Options
@@ -32,6 +32,16 @@ chromeAnonymous = False
 # Tabs
 useTabs = False
 tabs = 1
+
+# Captcha path
+if isLinux :
+    captchaPath = "/var/www/html/img/"
+else :
+    captchaPath = "img/"
+
+# Check path
+if not path.isdir(captchaPath):
+    mkdir(captchaPath)
 
 def loop1():
     global i
@@ -205,9 +215,9 @@ def loop7():
 
     ## Step 2
     gray              =   img.convert('L')
-    gray.save('img/captcha_gray.png')
+    gray.save(captchaPath+'captcha_gray.png')
     bw                =   gray.point(lambda x: 0 if x < 1 else 255, '1')
-    bw.save('img/captcha_thresholded.png')
+    bw.save(captchaPath+'captcha_thresholded.png')
     
     # Step 3
     strCaptcha        =   pytesseract.image_to_string(bw)
@@ -235,7 +245,6 @@ def waiting(Ttotal:int, onlyWait:bool=True):
     else :
         sleep(Ttotal)
             
-
 # DateTime 
 def pDte():
     return "["+datetime.datetime.now().strftime("%Y-%m-%d %H:%M")+"]:"
@@ -292,10 +301,10 @@ def setProxy():
     return [PROXY, ip]
 
 # Element Screenshoot
-def getImageScreenshot(element: WebElement) -> bytes:
+def getImageScreenshot(element: WebElement = False) -> bytes:
     global driver
-    
-    strCaptcha      =   "img/captcha.png" 
+    # Captcha file full path
+    strCaptcha      =   captchaPath+"captcha.png" 
     # driver          =   element._parent
     if element :
         ActionChains(driver).move_to_element(element).perform()  # focus
@@ -322,9 +331,9 @@ def exec():
     try:
 
         # Open virtual display
-        if isLinux :
-            display = Display(visible=0, size=(800, 800))
-            display.start()
+        #if isLinux :
+        #    display = Display(visible=0, size=(800, 800))
+        #    display.start()
 
         # Main base tool site
         urlMain =   "https://vipto.de/" #"https://agenciadix.com.br/"
@@ -422,10 +431,10 @@ def exec():
         driver.get(urlMain)
         waiting(5)
         # Print captcha
-        img_data          =     driver.find_element_by_xpath('/html/body/div[4]/div[2]/form/div/div/img')
+        #img_data          =     driver.find_element_by_xpath('/html/body/div[4]/div[2]/form/div/div/img')
         # Save file
-        getImageScreenshot(img_data)
-        print("Captcha image : ", "img/captcha.png")
+        getImageScreenshot()
+        print("Captcha image : ", captchaPath+"captcha.png")
         captcha = input(">> Open captcha image bellow and insert text : ")
         print("Captcha : ", captcha)
         driver.find_element_by_xpath('/html/body/div[4]/div[2]/form/div/div/div/input').send_keys(captcha) # Add Captcha
