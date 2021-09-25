@@ -5,21 +5,20 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.action_chains import ActionChains
-import math
-import pyfiglet
 from time import sleep
-import datetime
-import random, socket, struct , json, urllib.request
-import undetected_chromedriver.v2 as uc
+import platform, random, socket, struct , json, urllib.request, undetected_chromedriver.v2 as uc, pytesseract, base64, datetime, math, pyfiglet, itertools, threading, time, sys
 from io import BytesIO
 from io import StringIO
 from PIL import Image
-import pytesseract
-import base64
 from pyvirtualdisplay import Display
+from alive_progress import alive_bar, alive_it
+
 
 # Boost
 boost = False
+
+# Platform
+isLinux = True if platform.system() == "Linux" else False
 
 # Proxy
 isProxy = False
@@ -124,7 +123,7 @@ def loop3():
 def loop4():
     global i
     if not driver : exec()
-    sleep(10)
+    waiting(10)
     wait_time = 420 # 420 7 minutos # 600 - 11 minutes
     try:
         driver.find_element_by_xpath("/html/body/div[4]/div[1]/div[3]/div/div[1]/div/button").click() #Followers
@@ -133,29 +132,30 @@ def loop4():
         driver.refresh()
         loop4()
     try:
-        sleep(1)
+        waiting(1)
         driver.find_element_by_xpath("/html/body/div[4]/div[2]/div/form/div/input").send_keys(vidUrl) #Write
-        sleep(2)
+        waiting(2)
         driver.find_element_by_xpath("/html/body/div[4]/div[2]/div/form/div/div/button").click() #Search
-        sleep(5)
+        waiting(5)
         driver.find_element_by_xpath("/html/body/div[4]/div[2]/div/div/div/div/form/button").click() #AddFollowers
         # driver.execute_script("comfollowers();")
-        sleep(10)
+        waiting(10)
         i += 1
         total = i * 25
         print(pDte(),"Success delivered", total, "followers. Send again soon...")
         driver.refresh()
-        sleep(wait_time)
+        waiting(wait_time)
         loop4()
     except:
+        waiting(False)
         print(pDte(),"A generic error occurred. Now will retry again")
         if not boost : driver.refresh()
-        if not boost : sleep(10)
+        if not boost : waiting(10)
         loop4()
 
 def loop5():
     if not driver : exec()
-    sleep(20)
+    waiting(20)
     try:
         driver.find_element_by_xpath("/html/body/div[4]/div[1]/div[3]/div/div[5]/div/button").click()
     except:
@@ -163,26 +163,26 @@ def loop5():
         driver.refresh()
         loop5()
     try:
-        sleep(5)
+        waiting(5)
         driver.find_element_by_xpath("/html/body/div[4]/div[6]/div/form/div/input").send_keys(vidUrl) # Write
-        sleep(2)
+        waiting(2)
         driver.find_element_by_xpath("/html/body/div[4]/div[6]/div/form/div/div/button").click() # Search
-        sleep(5)
+        waiting(5)
         # driver.find_element_by_xpath("/html/body/div[4]/div[6]/div/div/div/div/div[1]/div/form/button").click() # AddShares
         driver.find_element_by_xpath("//*[@id=\"c2VuZC9mb2xsb3dlcnNfdGlrdG9s\"]/div[1]/div/form/button").click() #AddFollowers
-        sleep(5)
+        waiting(5)
         print(pDte(),"Shares sent! Sending more in 3 minutes ...")
-        sleep(180)
+        waiting(180)
         loop5()
     except Exception as e:
         print(pDte(),"A generic error occurred. Now will retry again. Error : " + str(e))
         driver.refresh()
-        sleep(5)
+        waiting(5)
         loop5()
 
 def loop6():
     if not driver : exec()
-    sleep(1000)
+    waiting(1000)
     driver.refresh()
     print(pDte(),"Reload")
     loop5()
@@ -191,7 +191,7 @@ def loop7():
     # Captcha Broker
     if not driver : exec()
     print(pDte(),">>>>> Captcha Broker") 
-    sleep(10)
+    waiting(10)
 
     ## Step 1
     # Get SRC from Captcha IMG
@@ -223,6 +223,15 @@ def loop7():
 # --------------------------------------------------------------------------------------------
 
 ## UTILS
+
+def waiting(Ttotal:int):
+    t = 0
+    with alive_bar(t, bar='blocks', spinner='classic', manual=True) as bar:
+        if t < Ttotal:
+            sleep(1)
+            t += 1
+            bar(t)
+            
 
 # DateTime 
 def pDte():
@@ -310,8 +319,9 @@ def exec():
     try:
 
         # Open virtual display
-        display = Display(visible=0, size=(800, 800))
-        display.start()
+        if isLinux :
+            display = Display(visible=0, size=(800, 800))
+            display.start()
 
         # Main base tool site
         urlMain =   "https://vipto.de/" #"https://agenciadix.com.br/"
@@ -323,8 +333,12 @@ def exec():
         else :
             chrome_options = uc.ChromeOptions()
             
+        if isLinux :
+            chrome_options.add_argument("start-maximized");             # open Browser in maximized mode
+            chrome_options.add_argument("disable-infobars");            # disabling infobars
+            chrome_options.add_argument("--disable-gpu");               # applicable to windows os only
 
-        # chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--headless')
         chrome_options.add_argument('window-size=200,700')
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
@@ -372,7 +386,11 @@ def exec():
         global driver
         if chromeAnonymous == False :
             if not driver :
-                driver = webdriver.Chrome(executable_path=r'chromedriver', options=chrome_options)
+                if isLinux :
+                    driver = webdriver.Chrome('chromedriver', options=chrome_options)
+                else :
+                    driver = webdriver.Chrome(executable_path=r'chromedriver', options=chrome_options)
+
         else :
             uc.TARGET_VERSION = 78        
             driver = uc.Chrome(options=chrome_options)
@@ -399,36 +417,38 @@ def exec():
 
         # Exec
         driver.get(urlMain)
-        sleep(5)
+        waiting(5)
         # Print captcha
         img_data          =     driver.find_element_by_xpath('/html/body/div[4]/div[2]/form/div/div/img')
         # Save file
         getImageScreenshot(img_data)
-        print("<a href='img/captcha.png'>img/captcha.png</a>")
-        captcha = input(">> Open captcha image bellow and insert text :")
+        print("Captcha image : ", "img/captcha.png")
+        captcha = input(">> Open captcha image bellow and insert text : ")
         print("Captcha : ", captcha)
         driver.find_element_by_xpath('/html/body/div[4]/div[2]/form/div/div/div/input').send_keys(captcha) # Add Captcha
-        sleep(1)
         driver.find_element_by_xpath('/html/body/div[4]/div[2]/form/div/div/div/div/button').click() # Execute Captcha
+        print("Captcha gone !")
+        clear()
+        print("\n\n>>>>> Process started <<<<<\n\n")
     except Exception as e:
         print("Engine error. Trying another...")
         if chromeAnonymous == False : 
             driver.close()
-        sleep(1)
+        waiting(1)
         exec()
 
 # -------------------------------------------------------------------------------------------
-
+clear()
 print("############################################################")
 print("######################## TIKTOK BOT ########################")
-print("############################################################")
+print("############################################################\n\n")
 
 # 
 vidUrl = str(input("Link do vídeo no Tiktok : "))
 if vidUrl == "" : vidUrl = "https://www.tiktok.com/@isacaram/video/6827907779047492869"
-print("Boosting vídeo : " + vidUrl)
+print("\n>>> Boosting vídeo : " + vidUrl, "\n")
 
-bot = int(input("\n\n########## What do you want to do ? ##########\n\n1 - Auto views(500)\n2 - Auto hearts\n3 - Auto (FIRST) comments heart\n4 - Auto followers\n5 - Auto Share\n6 - Simple reload\n7 - Captcha Broker\n\n##############################################\n\n"))
+bot = int(input("\n########## What do you want to do ? ##########\n\n1 - Auto views(500)\n2 - Auto hearts\n3 - Auto (FIRST) comments heart\n4 - Auto followers\n5 - Auto Share\n6 - Simple reload\n7 - Captcha Broker\n\n##############################################\n"))
 i = 0
 
 if bot == 1:
@@ -442,8 +462,8 @@ elif bot == 4:
 elif bot == 5:
     loop5()
 elif bot == 6:
-    loop5()
+    loop6()
 elif bot == 7:
-    loop7()    
+    loop7()
 else:
     print("You can insert just 1, 2, 3, 4, 5, 6 or 7")
