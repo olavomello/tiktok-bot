@@ -224,13 +224,16 @@ def loop7():
 
 ## UTILS
 
-def waiting(Ttotal:int):
-    t = 0
-    with alive_bar(t, bar='blocks', spinner='classic', manual=True) as bar:
-        if t < Ttotal:
-            sleep(1)
-            t += 1
-            bar(t)
+def waiting(Ttotal:int, onlyWait:bool=True):
+    if not onlyWait:
+        t = 0
+        with alive_bar(t, bar='blocks', spinner='classic', manual=True) as bar:
+            if t < Ttotal:
+                sleep(1)
+                t += 1
+                bar(t)
+    else :
+        sleep(Ttotal)
             
 
 # DateTime 
