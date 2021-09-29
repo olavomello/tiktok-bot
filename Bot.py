@@ -33,111 +33,128 @@ chromeAnonymous = False
 useTabs = False
 tabs = 1
 
+# Hide window
+isHideWin = True
+
 # Captcha path
 if isLinux :
-    captchaPath = "/var/www/html/img/"
+    imgPath = "/var/www/html/img/"
 else :
-    captchaPath = "img/"
+    imgPath = "img/"
 
 # Check path
-if not path.isdir(captchaPath):
-    mkdir(captchaPath)
+if not path.isdir(imgPath):
+    mkdir(imgPath)
 
 def loop1():
     global i
     if not driver : exec()
-    sleep(10)
+    noAdd()
+    waiting(5)
     try:
         driver.find_element_by_xpath("//*[@id=\"main\"]/div/div[4]/div/button").click()
     except:
+        logScreem()
         print(pDte(),"You didn't solve the captcha yet. Need to refresh to avoid endless loop.")
         loop1()
     try:
-        sleep(2)
+        waiting(2)
         driver.find_element_by_xpath("//*[@id=\"sid4\"]/div/form/div/input").send_keys(vidUrl)
-        sleep(1)
+        waiting(1)
         driver.find_element_by_xpath("//*[@id=\"sid4\"]/div/form/div/div/button").click()
-        sleep(2)
+        waiting(2)
         driver.find_element_by_xpath("//*[@id=\"c2VuZC9mb2xsb3dlcnNfdGlrdG9V\"]/div[1]/div/form/button").click()
-        sleep(10)
+        waiting(10)
+        logScreem()
         driver.refresh()
         i += 1
         total = i * 500
         print(pDte(),"Views successfull delivered! Total", total,"views. Send again soon...")
-        if not boost : sleep(320)
+        if not boost : waiting(320)
         loop1()
     except:
         print(pDte(),"A generic error occurred. Now will retry again")
+        logScreem()
         if not boost : driver.refresh()
-        if not boost : sleep(10)
+        if not boost : waiting(10)
         loop1()
 
 def loop2():
     if not driver : exec()
-    sleep(10)
+    noAdd()
+    waiting(5)
     try:
         driver.find_element_by_xpath("/html/body/div[4]/div[1]/div[3]/div/div[2]/div/button").click()
     except:
+        logScreem()
         print(pDte(),"You didn't solve the captcha yet. Need to refresh to avoid endless loop.")
         driver.refresh()
         loop2()
     try:
-        sleep(2)
+        waiting(2)
         driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/form/div/input").send_keys(vidUrl)
-        sleep(1)
+        waiting(1)
         driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/form/div/div/button").click()
-        sleep(10)
+        waiting(10)
         driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div[1]/div/form/button").click()
-        sleep(10)
+        waiting(10)
         hearts = driver.find_element_by_xpath('//*[@id="c2VuZE9nb2xsb3dlcnNfdGlrdG9r"]/span').text
-        sleep(55)
+        waiting(55)
+        logScreem()
         print(pDte(),hearts," Success delivered!")
-        sleep(100)
+        waiting(100)
         driver.refresh()
-        sleep(200)
+        waiting(200)
         loop2()
     except:
         print(pDte(),"A generic error occurred. Now will retry again")
+        logScreem()
         driver.refresh()
-        sleep(355)
+        waiting(355)
         loop2()
 
 def loop3():
     if not driver : exec()
-    sleep(10)
+    noAdd()
+    waiting(5)
     try:
         driver.find_element_by_xpath("/html/body/div[4]/div[1]/div[3]/div/div[3]/div/button").click()
     except:
+        logScreem()
         print(pDte(),"You didn't solve the captcha yet. Need to refresh to avoid endless loop.")
         driver.refresh()
         loop2()
     try:
-        sleep(2)
+        waiting(2)
         driver.find_element_by_xpath("/html/body/div[4]/div[4]/div/form/div/input").send_keys(vidUrl)
-        sleep(1)
+        waiting(1)
         driver.find_element_by_xpath("/html/body/div[4]/div[4]/div/form/div/div/button").click()
-        sleep(5)
+        waiting(5)
         driver.find_element_by_xpath("/html/body/div[4]/div[4]/div/div/div/div/div[1]/div/form/button").click()
-        sleep(5)
+        waiting(5)
         driver.find_element_by_xpath("/html/body/div[4]/div[4]/div/div/div/div/form/ul/li/div/button").click()
-        sleep(47)
+        waiting(47)
+        logScreem()
         driver.refresh()
         print(pDte(),"Success delivered!")
         loop3()
     except:
         print(pDte(),"A generic error occurred. Now will retry again")
+        logScreem()
         driver.refresh()
-        sleep(50)
+        waiting(50)
         loop3()
 
 def loop4():
     global i
     if not driver : exec()
-    waiting(10)
+    noAdd()
+    waiting(5)
     wait_time = 420 # 420 7 minutos # 600 - 11 minutes
     try:
         driver.find_element_by_xpath("/html/body/div[4]/div[1]/div[3]/div/div[1]/div/button").click() #Followers
     except:
+        logScreem()
         print(pDte(),"You didn't solve the captcha yet. Need to refresh to avoid endless loop.")
         driver.refresh()
         loop4()
@@ -150,6 +167,7 @@ def loop4():
         driver.find_element_by_xpath("/html/body/div[4]/div[2]/div/div/div/div/form/button").click() #AddFollowers
         # driver.execute_script("comfollowers();")
         waiting(10)
+        logScreem()
         i += 1
         total = i * 25
         print(pDte(),"Success delivered", total, "followers. Send again soon...")
@@ -159,16 +177,19 @@ def loop4():
     except:
         waiting(False)
         print(pDte(),"A generic error occurred. Now will retry again")
+        logScreem()
         if not boost : driver.refresh()
         if not boost : waiting(10)
         loop4()
 
 def loop5():
     if not driver : exec()
-    waiting(20)
+    noAdd()
+    waiting(5)
     try:
         driver.find_element_by_xpath("/html/body/div[4]/div[1]/div[3]/div/div[5]/div/button").click()
     except:
+        logScreem()
         print(pDte(),"You didn't solve the captcha yet. Need to refresh to avoid endless loop.")
         driver.refresh()
         loop5()
@@ -181,18 +202,22 @@ def loop5():
         # driver.find_element_by_xpath("/html/body/div[4]/div[6]/div/div/div/div/div[1]/div/form/button").click() # AddShares
         driver.find_element_by_xpath("//*[@id=\"c2VuZC9mb2xsb3dlcnNfdGlrdG9s\"]/div[1]/div/form/button").click() #AddFollowers
         waiting(5)
-        print(pDte(),"Shares sent! Sending more in 3 minutes ...")
-        waiting(180)
+        logScreem()
+        print(pDte(),"Shares sent! Sending more in 2 minutes ...")
+        waiting(120)
         loop5()
     except Exception as e:
         print(pDte(),"A generic error occurred. Now will retry again. Error : " + str(e))
+        logScreem()
         driver.refresh()
         waiting(5)
         loop5()
 
 def loop6():
     if not driver : exec()
-    waiting(1000)
+    noAdd()   
+    waiting(5)
+    logScreem()
     driver.refresh()
     print(pDte(),"Reload")
     loop5()
@@ -200,6 +225,9 @@ def loop6():
 def loop7():
     # Captcha Broker
     if not driver : exec()
+    noAdd()
+    waiting(5)    
+    logScreem()
     print(pDte(),">>>>> Captcha Broker") 
     waiting(10)
 
@@ -215,9 +243,9 @@ def loop7():
 
     ## Step 2
     gray              =   img.convert('L')
-    gray.save(captchaPath+'captcha_gray.png')
+    gray.save(imgPath+'captcha_gray.png')
     bw                =   gray.point(lambda x: 0 if x < 1 else 255, '1')
-    bw.save(captchaPath+'captcha_thresholded.png')
+    bw.save(imgPath+'captcha_thresholded.png')
     
     # Step 3
     strCaptcha        =   pytesseract.image_to_string(bw)
@@ -234,6 +262,27 @@ def loop7():
 
 ## UTILS
 
+# Screen log
+def logScreem():
+    try:
+        getImageScreenshot(False, "logscreem.png")
+        print("Logscreem image : ", imgPath+"logscreem.png")
+    except Exception as e:
+        return        
+
+# Remove add to speedup and net performance
+def noAdd():
+    try :
+        driver.execute_script("""
+        var elems = document.querySelectorAll(".google_ads, .adsbygoogle");
+        elems.forEach(function(el) {
+            el.hide();
+        });
+        """)
+    except Exception as e:
+        return
+
+# Waiter
 def waiting(Ttotal:int, onlyWait:bool=True):
     if not onlyWait:
         t = 0
@@ -301,10 +350,10 @@ def setProxy():
     return [PROXY, ip]
 
 # Element Screenshoot
-def getImageScreenshot(element: WebElement = False) -> bytes:
+def getImageScreenshot(element: WebElement = False, img = "captcha.png") -> bytes:
     global driver
     # Captcha file full path
-    strCaptcha      =   captchaPath+"captcha.png" 
+    strCaptcha      =   imgPath+img 
     # driver          =   element._parent
     if element :
         ActionChains(driver).move_to_element(element).perform()  # focus
@@ -350,8 +399,8 @@ def exec():
             chrome_options.add_argument("disable-infobars");            # disabling infobars
             chrome_options.add_argument("--disable-gpu");               # applicable to windows os only
 
-        chrome_options.add_argument('--headless')
-        chrome_options.add_argument('window-size=200,700')
+        if isHideWin : chrome_options.add_argument('--headless')
+        chrome_options.add_argument('window-size=400,600')
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
         chrome_options.add_argument('--disable-extensions')
@@ -430,11 +479,12 @@ def exec():
         # Exec
         driver.get(urlMain)
         waiting(5)
+        noAdd()
         # Print captcha
         #img_data          =     driver.find_element_by_xpath('/html/body/div[4]/div[2]/form/div/div/img')
         # Save file
-        getImageScreenshot()
-        print("Captcha image : ", captchaPath+"captcha.png")
+        getImageScreenshot(False, "captcha.png")
+        print("Captcha image : ", imgPath+"captcha.png")
         captcha = input(">> Open captcha image bellow and insert text : ")
         print("Captcha : ", captcha)
         driver.find_element_by_xpath('/html/body/div[4]/div[2]/form/div/div/div/input').send_keys(captcha) # Add Captcha
